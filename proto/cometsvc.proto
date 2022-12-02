@@ -1,0 +1,79 @@
+syntax = "proto3";
+package cometsvc;
+
+option go_package = "github.com/jxskiss/nonamegw/proto/cometsvc;cometsvc";
+
+import "messag.proto";
+
+// ---- broker RPC through Nats Server ---- //
+
+message AuthToken {
+    enum VerifyCode {
+        SUCCESS = 0;
+        INVALID = 1;
+        EXPIRED = 2;
+    }
+
+    string token = 1;
+    int64 sign_time_msec = 2;
+    int64 app_id = 3;
+    int64 user_id = 4;
+    int64 device_id = 5;
+}
+
+message VerifyAuthTokenRequest {
+    string token = 1;
+    string client_ip = 2;
+}
+
+message VerifyAuthTokenResponse {
+    AuthToken.VerifyCode code = 1;
+    AuthToken token = 2;
+}
+
+message GetCometConfigurationRequest {
+}
+
+message GetCometConfigurationResponse {
+    messag.CometConfiguration configuration = 1;
+}
+
+message BrokerRequest {
+    oneof request {
+        VerifyAuthTokenRequest VerifyAuthTokenRequest = 1;
+        GetCometConfigurationRequest GetCometConfigurationRequest = 2;
+    }
+}
+
+message BrokerResponse {
+    oneof response {
+        VerifyAuthTokenResponse VerifyAuthTokenResponse = 1;
+        GetCometConfigurationResponse GetCometConfigurationResponse = 2;
+    }
+}
+
+// ---- broker RPC through Nats Server ---- //
+
+// ---- comet RPC through Nats Server ---- //
+
+message GetConnectionInfoRequest {
+    string conn_id = 1;
+}
+
+message GetConnectionInfoResponse {
+    // TODO
+}
+
+message CometRequest {
+    oneof request {
+        GetConnectionInfoRequest GetConnectionInfoRequest = 1;
+    }
+}
+
+message CometResponse {
+    oneof response {
+        GetConnectionInfoResponse GetConnectionInfoResponse = 1;
+    }
+}
+
+// ---- comet RPC through Nats Server ---- //

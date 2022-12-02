@@ -1,0 +1,20 @@
+syntax = "proto3";
+package protocol;
+
+option go_package = "github.com/jxskiss/nonamegw/proto/protocol;protocol";
+
+message KVEntry {
+    string Key = 1;
+    string Value = 2;
+}
+
+message Packet {
+    bytes control = 1;
+    int64 seq_id = 2;
+    int32 flag = 3;
+    int32 command = 4;
+
+    int64 biz_flag = 5;
+    repeated KVEntry headers = 6;
+    bytes payload = 7;
+}

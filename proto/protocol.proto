@@ -1,0 +1,48 @@
+syntax = "proto3";
+package protocol;
+
+option go_package = "github.com/jxskiss/nonamegw/proto/protocol;protocol";
+
+message Connection {
+    string id = 1;
+    int64 app_id = 2;
+    int64 user_id = 3;
+    int64 device_id = 4;
+
+    string client_ip = 11;
+    string client_version = 12;
+}
+
+message ConnectionList {
+    repeated Connection connections = 1;
+}
+
+message Content {
+    int64 biz_flag = 1;
+    map<string, string> headers = 2;
+    bytes payload = 3;
+}
+
+message Event {
+    enum Type {
+        TOUCH = 0;
+        CONNECT = 1;
+        RECONNECT = 2;
+        DISCONNECT = 3;
+        KICKOFF = 4;
+    }
+
+    message ReconnectData {
+        string old_id = 1;
+    }
+
+    Connection conn = 1;
+    Type type = 2;
+
+    ReconnectData reconnect_data = 6;
+}
+
+message Message {
+    Connection conn = 1;
+    Content content = 2;
+}

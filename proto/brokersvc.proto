@@ -1,0 +1,135 @@
+syntax = "proto3";
+package brokersvc;
+
+option go_package = "github.com/jxskiss/nonamegw/proto/brokersvc;brokersvc";
+
+import "protocol.proto";
+
+service Broker {
+    // Query queries connections of specified user IDs or device IDs.
+    rpc Query (QueryRequest) returns (QueryResponse);
+
+    // Push sends message to specified connections.
+    rpc Push (PushRequest) returns (PushResponse);
+
+    // Sync notifies specified connections to sync messages.
+    rpc Sync (SyncRequest) returns (SyncResponse);
+
+    // Broadcast sends message to connections specified by broadcast specification.
+    rpc Broadcast (BroadcastRequest) returns (BroadcastResponse);
+
+    // StopBroadcast stops a broadcast task submitted previously.
+    rpc StopBroadcast (StopBroadcastRequest) returns (StopBroadcastResponse);
+
+    // SignToken signs a token for client to connect to the Comet server.
+    rpc SignToken (SignTokenRequest) returns (SignTokenResponse);
+}
+
+message Authorization {
+    int64 app_id = 1;
+    string access_key = 2;
+}
+
+message QueryRequest {
+    Authorization auth = 1;
+    repeated int64 user_ids = 2;
+    repeated int64 device_ids = 3;
+}
+
+message QueryResponse {
+    map<int64, protocol.ConnectionList> user_connections = 1;
+    map<int64, protocol.ConnectionList> device_connections = 2;
+}
+
+message UserDevice {
+    int64 user_id = 1;
+    int64 device_id = 2;
+}
+
+message PushTarget {
+
+    enum Type {
+        CONNECTION = 0;
+        USER = 1;
+        USER_DEVICE = 2;
+        UNAUTHENTICATED_DEVICE = 3;
+    }
+
+    message Connections {
+        repeated string connection_ids = 1;
+    }
+
+    message Users {
+        repeated int64 user_ids = 1;
+    }
+
+    message UserDevices {
+        repeated UserDevice user_devices = 1;
+    }
+
+    message Devices {
+        repeated int64 device_ids = 1;
+    }
+
+    Type type = 1;
+    oneof target {
+        Connections connections = 2;
+        Users users = 3;
+        UserDevices user_devices = 4;
+        Devices devices = 5;
+    }
+
+    repeated string version_filters = 8;
+}
+
+message PushRequest {
+    Authorization auth = 1;
+    PushTarget target = 2;
+    protocol.Content content = 3;
+}
+
+message PushResponse {
+
+}
+
+message SyncRequest {
+    Authorization auth = 1;
+    PushTarget target = 2;
+}
+
+message SyncResponse {
+
+}
+
+message BroadcastTarget {
+    // TODO
+}
+
+message BroadcastRequest {
+    Authorization auth = 1;
+    BroadcastTarget target = 2;
+    protocol.Content content = 3;
+}
+
+message BroadcastResponse {
+    string broadcast_id = 1;
+}
+
+message StopBroadcastRequest {
+    Authorization auth = 1;
+    string broadcast_id = 2;
+}
+
+message StopBroadcastResponse {
+}
+
+message SignTokenRequest {
+    Authorization auth = 1;
+    int64 user_id = 2;
+    int64 device_id = 3;
+}
+
+message SignTokenResponse {
+    string token = 1;
+    int64 expire_at = 2;
+}

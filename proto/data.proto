@@ -1,0 +1,22 @@
+syntax = "proto3";
+package data;
+
+option go_package = "github.com/jxskiss/nonamegw/proto/data;data";
+
+message ConnectionInfo {
+    string id = 1;
+    int64 app_id = 2;
+    int64 user_id = 3;
+    int64 device_id = 4;
+
+    string client_ip = 11;
+    string client_version = 12;
+}
+
+message TokenInfo {
+    string id = 1;
+    int64 sign_time_msec = 2;
+    int64 app_id = 3;
+    int64 user_id = 4;
+    int64 device_id = 5;
+}

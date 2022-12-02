@@ -1,0 +1,25 @@
+syntax = "proto3";
+package bizapi;
+
+option go_package = "github.com/jxskiss/nonamegw/proto/bizapi;bizapi";
+
+import "protocol.proto";
+
+service BizApi {
+    rpc OnMessage (OnMessageRequest) returns (OnMessageResponse);
+    rpc OnEvent (OnEventRequest) returns (OnEventResponse);
+}
+
+message OnMessageRequest {
+    protocol.Message message = 1;
+}
+
+message OnMessageResponse {
+}
+
+message OnEventRequest {
+    protocol.Event event = 1;
+}
+
+message OnEventResponse {
+}
